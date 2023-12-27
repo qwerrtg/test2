@@ -1,0 +1,218 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>首页</title>
+<link href="shouy.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="web">
+<div class="top"><div class="logo"><img src="img/logo.png"></div></div>
+<div class="nav">
+<ul>
+<li><a class="hot" href="index.html">网站首页</a></li>
+<li><a href="index01.html">西北要闻</a></li>
+<li><a href="index02.html">校园新闻</a></li>
+<li class="mar0"><a href="index03.html">校园文化</a></li>
+</ul>
+</div>
+<div class="box1">
+<div class="left">
+<div class="box" id="box">
+    <div class="inner">
+        <!--轮播图-->
+        <ul>
+            <li><a href="#"><img src="1q.jpg" alt=""></a></li>
+             <li><a href="#"><img src="1.jpg" alt=""></a></li>
+              <li><a href="#"><img src="2.jpg" alt=""></a></li>
+     
+ 
+        </ul>
+ 
+        <ol class="bar">
+ 
+        </ol>
+     
+ 
+    </div>
+</div>
+
+<script>
+    /**
+     *
+     * @param id  传入元素的id
+     * @returns {HTMLElement | null}  返回标签对象，方便获取元素
+     */
+    function my$(id) {
+        return document.getElementById(id);
+    }
+ 
+    //获取各元素，方便操作
+    var box=my$("box");
+    var inner=box.children[0];
+    var ulObj=inner.children[0];
+    var list=ulObj.children;
+    var olObj=inner.children[1];
+    var arr=my$("arr");
+    var imgWidth=inner.offsetWidth;
+    var right=my$("right");
+    var pic=0;
+    //根据li个数，创建小按钮
+    for(var i=0;i<list.length;i++){
+        var liObj=document.createElement("li");
+ 
+        olObj.appendChild(liObj);
+        liObj.innerText=(i+1);
+        liObj.setAttribute("index",i);
+ 
+        //为按钮注册mouseover事件
+        liObj.onmouseover=function () {
+            //先清除所有按钮的样式
+ 
+            for (var j=0;j<olObj.children.length;j++){
+                olObj.children[j].removeAttribute("class");
+            }
+            this.className="current";
+            pic=this.getAttribute("index");
+            animate(ulObj,-pic*imgWidth);
+        }
+ 
+    }
+ 
+ 
+    //设置ol中第一个li有背景颜色
+    olObj.children[0].className = "current";
+    //克隆一个ul中第一个li,加入到ul中的最后=====克隆
+    ulObj.appendChild(ulObj.children[0].cloneNode(true));
+ 
+    var timeId=setInterval(onmouseclickHandle,2000);
+    //左右焦点实现点击切换图片功能
+    box.onmouseover=function () {
+        arr.style.display="block";
+        clearInterval(timeId);
+    };
+    box.onmouseout=function () {
+        arr.style.display="none";
+        timeId=setInterval(onmouseclickHandle,2000);
+    };
+ 
+    right.onclick=onmouseclickHandle;
+    function onmouseclickHandle() {
+        //如果pic的值是5,恰巧是ul中li的个数-1的值,此时页面显示第六个图片,而用户会认为这是第一个图,
+        //所以,如果用户再次点击按钮,用户应该看到第二个图片
+        if (pic == list.length - 1) {
+            //如何从第6个图,跳转到第一个图
+            pic = 0;//先设置pic=0
+            ulObj.style.left = 0 + "px";//把ul的位置还原成开始的默认位置
+        }
+        pic++;//立刻设置pic加1,那么此时用户就会看到第二个图片了
+        animate(ulObj, -pic * imgWidth);//pic从0的值加1之后,pic的值是1,然后ul移动出去一个图片
+        //如果pic==5说明,此时显示第6个图(内容是第一张图片),第一个小按钮有颜色,
+        if (pic == list.length - 1) {
+            //第五个按钮颜色干掉
+            olObj.children[olObj.children.length - 1].className = "";
+            //第一个按钮颜色设置上
+            olObj.children[0].className = "current";
+        } else {
+            //干掉所有的小按钮的背景颜色
+            for (var i = 0; i < olObj.children.length; i++) {
+                olObj.children[i].removeAttribute("class");
+            }
+            olObj.children[pic].className = "current";
+        }
+    }
+    left.onclick=function () {
+        if (pic==0){
+            pic=list.length-1;
+            ulObj.style.left=-pic*imgWidth+"px";
+        }
+        pic--;
+        animate(ulObj,-pic*imgWidth);
+        for (var i = 0; i < olObj.children.length; i++) {
+            olObj.children[i].removeAttribute("class");
+        }
+        //当前的pic索引对应的按钮设置颜色
+        olObj.children[pic].className = "current";
+    };
+ 
+    //设置任意的一个元素,移动到指定的目标位置
+    function animate(element, target) {
+        clearInterval(element.timeId);
+        //定时器的id值存储到对象的一个属性中
+        element.timeId = setInterval(function () {
+            //获取元素的当前的位置,数字类型
+            var current = element.offsetLeft;
+            //每次移动的距离
+            var step = 10;
+            step = current < target ? step : -step;
+            //当前移动到位置
+            current += step;
+            if (Math.abs(current - target) > Math.abs(step)) {
+                element.style.left = current + "px";
+            } else {
+                //清理定时器
+                clearInterval(element.timeId);
+                //直接到达目标
+                element.style.left = target + "px";
+            }
+        }, 10);
+    }
+</script>
+<ul>
+<li><a href="index0101.html">城环学院学生参加中国高校地理科学...<span>19-11-12</span></a></li>
+<li><a href="index0102.html">我校青年创客受邀参加"2019年...<span>19-11-12</span></a></li>
+<li><a href="index0103.html">数学学院举办青年教师多媒体...<span>19-11-12</span></a></li>
+<li><a href="index0101.html">城环学院学生参加中国高校地理科学...<span>19-11-12</span></a></li>
+<li><a href="index0102.html">我校青年创客受邀参加"2019年...<span>19-11-12</span></a></li>
+<li><a href="index0103.html">数学学院举办青年教师多媒体...<span>19-11-12</span></a></li>
+<li><a href="index0101.html">城环学院学生参加中国高校地理科学...<span>19-11-12</span></a></li>
+<li><a href="index0102.html">我校青年创客受邀参加"2019年...<span>19-11-12</span></a></li>
+<li><a href="index0103.html">数学学院举办青年教师多媒体...<span>19-11-12</span></a></li>
+</ul>
+</div>
+<div class="cent">
+<div class="tit"><a href="index02.html"><h1>校园新闻</h1></a></div>
+<div class="bx1">
+<a href="index0101.html">
+<h1>城环学院学生参加中国高校地理科学展示</h1>
+<p>日前，"新蚁族杯"第五届高校地理科学展示大赛总决赛在南京大学举行。由我校城市与环境学院何毅、张玉柱老师指导，2017级自然地理与</p>
+</a>
+</div>
+<div class="bx2">
+<a href="index0102.html">
+<h2>我校青年创客受邀参加"2019年西安大学生创客节"活动 </h2>
+<p>11月23日，由西安市人力资源和社会保障局、西安电子科技大学主办，西安市财政局、西安交通大学、西北工业大学及我校等高校联合协办的"2019年西安大学生创客节"活动在西安电子科技大学长安校区举行。本次创客节活动主要包括开幕式、创客论坛、就业创业政策宣讲、创新创业项目展示、智能机器人表演等七项内容。</p>
+</a>
+<a href="index0103.html">
+<h2>数学学院举办青年教师多媒体课件设计竞赛 </h2>
+<p>11月27日，数学学院举行2019年青年教师多媒体课件设计竞赛。校党委常委、副校长王尧宇应邀与数学学院全体教职工参加了此次活动。活动旨在鼓励青年教师采取多元化手段教学，提高教学质量，增强与学生的沟通互动，提升课堂教学效果。本次竞赛活动共有30多位教师提交了参赛作品，经过多轮评审，共遴选优秀课件12部。刘俊荣、韩迪、孙宜民、赵婷婷、曾玲莉5位老师进行了现场课件展示。</p>
+</a>
+</div>
+
+</div>
+<div class="right">
+<div class="tit2"><a href="#"><h1>西北大学简介</h1></a></div>
+<p>西北大学肇始于1902年的陕西大学堂和京师大学堂速成科仕学馆。1912年始称西北大学。1923年改为国立西北大学。1937年西迁来陕的国立北平大学、北平师范大学、北洋工学院和北平研究院等组成国立西安临时大学，1938年改为国立西北联合大学，1939年复称国立西北大学。新中国成立后为教育部直属综合大学。1950年复名西北大学。1958年改隶陕西省主管。1978年被确定为全国重点大学。现为首批国家"世界一流学科建设高校"，国家"211工程"建设院校、教育部与陕西省共建高校。</p>
+<br> 
+<p>在长期的发展历程中，西北大学形成了"发扬民族精神，融合世界思想，肩负建设西北之重任"的办学理念，汇聚了众多名师大家，产生了一批高水平学术成果，培养了大批才任天下的杰出人才，享有良好的学术声誉和社会声望，被誉为"中华石油英才之母""经济学家的摇篮""作家摇篮"。</p>
+</div>
+
+</div>
+<div class="box2">
+<div class="tit"><a href="index03.html"><h1>校园文化</h1></a></div>
+<ul>
+    <div id="one7"><a id="a5" href="">抒情民谣</a><img id="im4" src="2.jpg" alt=""></div>
+    <div id="one8"><a id="a6" href="">经典老歌</a><img id="im5" src="7.jpg" alt=""></div>
+    <div id="one9"><a id="a7" href="">欧美超燃</a><img id="im6" src="26.jpg" alt=""></div>
+   
+</ul>
+</div>
+
+
+</div>
+</body>
+</html>
+
+
+
